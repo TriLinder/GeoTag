@@ -17,6 +17,8 @@ async function getConfig() {
 async function pageLoad() {
     console.log("Page loaded!");
     await getConfig();
+
+    socket = io();
     
     mapboxgl.accessToken = config["mapboxApiKey"];
 
@@ -29,6 +31,13 @@ async function pageLoad() {
     });
 
     map.on("style.load", () => {map.setFog()});
+
+    socket.on("connect", function() {
+                                    socket.emit('clientConnect', {connected: true}); 
+                                    console.log("Socket connected!");
+                                });
+
+    socket.on("update", function(data) {console.log(data)});
 }
 
 window.onload = pageLoad;
