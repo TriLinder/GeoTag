@@ -1,4 +1,5 @@
 let config = {};
+let runnerInfo = null;
 
 async function request(url, options = {}) {
     let object = await fetch(url, options);
@@ -22,7 +23,7 @@ async function pageLoad() {
     
     mapboxgl.accessToken = config["mapboxApiKey"];
 
-    const map = new mapboxgl.Map({
+    map = new mapboxgl.Map({
         container: "map",
         style: "mapbox://styles/mapbox/streets-v11",
         center: config["mapCenter"],
@@ -30,14 +31,59 @@ async function pageLoad() {
         projection: config["mapProjection"]
     });
 
-    map.on("style.load", () => {map.setFog()});
+    map.on("style.load", function() {map.setFog()});
+    map.on("load", async function() {
+                                    runnerIcon = map.addImage("runner", document.getElementById("runnerIcon"));
+
+                                    map.addSource("runner", {type: "geojson", data: getGeojson()});
+
+                                    map.addLayer({
+                                        "id": "runner",
+                                        "type": "symbol",
+                                        "source": "runner",
+                                        "layout": {
+                                            "icon-image": "runner",
+                                            "icon-size": 1
+                                        }    
+                                    });
+    });
 
     socket.on("connect", function() {
                                     socket.emit('clientConnect', {connected: true}); 
                                     console.log("Socket connected!");
                                 });
 
-    socket.on("update", function(data) {console.log(data)});
+    socket.on("update", updateSocket);
+}
+
+function getGeojson() {
+    lat = 0;
+    lon = 0
+    
+    if (runnerInfo) {
+        lat = runnerInfo["location"]["lat"];
+        lon = runnerInfo["location"]["lon"];
+    }
+
+    return {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [lon, lat]
+                }
+            }
+        ]
+    };
+}
+
+function updateSocket(data) {
+    runnerInfo = data["runner"];
+
+    //Update runner's position on the map
+    map.getSource("runner").setData(getGeojson());
 }
 
 window.onload = pageLoad;

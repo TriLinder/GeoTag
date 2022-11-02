@@ -1,13 +1,26 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO
+import uuid
 import time
 import math
 import json
 
-from numpy import broadcast
-
 app = Flask(__name__)
 socketio = SocketIO(app)
+
+class Player :
+    def __init__(self, name) -> None:
+        self.name = name
+        self.id = uuid.uuid4()
+        self.token = uuid.uuid4().hex
+
+        self.lastUpdate = -1
+        self.lat = None
+        self.lon = None
+    
+    def updatePos(self, lat, lon) :
+        self.lastUpdate = time.time()
+        self.lat, self.lon = lat, lon
 
 @socketio.on('clientConnect')
 def clientConnectedSocket(data):
@@ -24,11 +37,15 @@ def updateLocationApi() :
     playerID = request.headers["playerID"]
     lat, lon = request.data.decode("utf-8").split(";")
 
-    data = {playerID: {"lat": lat, "lon": lon, "name": "PLACEHOLDER", "time": math.ceil(time.time())}}
+    data = {"runner": {"id": "tester", "location": {"lat": lat, "lon": lon}}, "time": time.time()}
 
     socketio.emit("update", data, broadcast=True)
 
     return "ok"
+
+@app.get("/")
+def indexPage() :
+    return render_template("register.html")
 
 @app.get("/map")
 def mapPage() :
