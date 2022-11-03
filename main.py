@@ -59,6 +59,14 @@ class Player :
 def validatePlayerID(playerID) :
     return playerID in game.players
 
+def validateCookies(cookies) :
+    cookies = list(cookies)
+
+    try :
+        return validatePlayerID(cookies[0])
+    except IndexError :
+        return False
+
 @socketio.on('clientConnect')
 def clientConnectedSocket(data):
     sendUpdateSocket()
@@ -114,14 +122,14 @@ def updateLocationApi() :
 
 @app.get("/")
 def indexPage() :
-    if validatePlayerID(list(request.cookies)[0]) :
+    if validateCookies(request.cookies) :
         return redirect("/map")
 
     return render_template("register.html")
 
 @app.get("/map")
 def mapPage() :
-    if not validatePlayerID(list(request.cookies)[0]) :
+    if not validateCookies(request.cookies) :
         return redirect("/")
 
     return render_template("game.html")
