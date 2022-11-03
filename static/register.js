@@ -1,12 +1,14 @@
+var playerInfo = null
+
 var usernameInput = document.getElementById("usernameInput");
 var registerButton = document.getElementById("registerButton");
 var errorElement = document.getElementById("error");
 
 var overlayDiv = document.getElementById("overlayDiv");
 var playerInfoDiv = document.getElementById("playerInfo");
-var playerInfoDivSlide1 = document.getElementById("playerInfoSlide1");
-var playerInfoDivSlide2 = document.getElementById("playerInfoSlide2");
 var welcomeTextElement = document.getElementById("welcomeText");
+var playerIdTextarea = document.getElementById("playerIdTextarea");
+var enterGameButton = document.getElementById("enterGameButton");
 
 async function request(url, options={}) {
     let object = await fetch(url, options);
@@ -35,12 +37,7 @@ function showPlayerInfo(playerInfo) {
     playerInfoDiv.style.display = "block";
 
     welcomeTextElement.innerHTML = `Welcome, ${playerInfo["username"]}!`;
-    
-    setTimeout(function() {
-        playerInfoDivSlide1.classList.add("slideUpAnim");
-        playerInfoDivSlide2.classList.add("slideFromBottomAnim");
-        playerInfoDivSlide2.style.display = "inherit";
-    }, 1000);
+    playerIdTextarea.innerHTML = playerInfo["appHttpHeaders"];
 }
 
 async function register() {
@@ -61,11 +58,33 @@ async function register() {
         return
     }
 
-    info = await getPlayerInfo(username);
-    playerID = info["playerID"];
+    playerInfo = await getPlayerInfo(username);
+    playerID = playerInfo["playerID"];
 
-    showPlayerInfo(info);
+    showPlayerInfo(playerInfo);
 
     //document.cookie = document.cookie = playerID + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/";
     //self.window.location = "/map";
+}
+
+function copyAppHttpHeaders() {
+    if (navigator.clipboard) {
+        playerIdTextarea.innerHTML = "COPIED TO CLIPBOARD!";
+        
+        navigator.clipboard.writeText(playerInfo["appHttpHeaders"]);
+
+        setTimeout(function() {
+            playerIdTextarea.innerHTML = playerInfo["appHttpHeaders"];
+        }, 1000);
+    }
+    else {
+        playerIdTextarea.setSelectionRange(0, 99999);
+    }
+}
+
+function enterGame() {
+    enterGameButton.disabled = true;
+    console.log("Writing to cookies");
+    document.cookie = document.cookie = playerID + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/";
+    self.window.location = "/map";
 }

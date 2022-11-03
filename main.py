@@ -29,7 +29,7 @@ class Player :
     def __init__(self, name, game) -> None :
         self.name = name
         self.game = game
-        self.id = str(uuid.uuid4())
+        self.id = uuid.uuid4().hex
 
         self.lastUpdate = -1
         self.isRunner = False
@@ -65,7 +65,7 @@ def clientConnectedSocket(data):
 def sendUpdateSocket() :
     playerInfo = {}
 
-    for player in game.players :
+    for player in game.players.values() :
         playerInfo[player.id] = player.getPlayerInfo()
 
     data = {"runner": game.getRunner().getRunnerInfo(), "players": playerInfo, "time": time.time()}
@@ -80,7 +80,7 @@ def registerApi() :
     username = j["username"]
     player = game.addPlayer(username)
 
-    return json.dumps({"playerID": player.id, "isRunner": player.isRunner, "username": player.name})
+    return json.dumps({"playerID": player.id, "appHttpHeaders": f"playerID: {player.id}", "isRunner": player.isRunner, "username": player.name})
 
 @app.get("/api/get-config")
 def getConfigApi() :
@@ -90,7 +90,6 @@ def getConfigApi() :
 def updateLocationApi() :
     global playerLocations
     
-    print(str(request.headers))
     playerID = request.headers["playerID"]
     lat, lon = request.data.decode("utf-8").split(";")
 

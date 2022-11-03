@@ -10,20 +10,18 @@
 
     <div id="overlayDiv" style="display: none;">
       <div id="playerInfo" class="playerInfoSlide" style="display: none;">
-        <div id="playerInfoSlide1">
-          <h2 id="welcomeText">Welcome, TriLinder!</h2>
-        </div>
-
-        <div id="playerInfoSlide2" class="playerInfoSlide" style="display: none;">
-          <p>Paste this into your app.</p>
-        </div>
+        <h2 id="welcomeText">Welcome, TriLinder!</h2>
+        <hr>
+        <p>Paste the code below into the app.</p>
+        <textarea id="playerIdTextarea" spellcheck="false" onclick="copyAppHttpHeaders()" readonly>playerID: 78da9358ca6746ec845e95188e32d8f2</textarea>
+        <button id="enterGameButton" onclick="enterGame()">ENTER THE GAME</button>
       </div>
     </div>
 
     <div class="box">
       <h2>Username:</h2>
       <p id="error"></p>
-      <input type="text" id="usernameInput" maxlength="8" placeholder="Username">
+      <input type="text" id="usernameInput" maxlength="16" placeholder="Username">
       <button onclick="register()" id="registerButton"><span class="buttonSymbol"> > </span></button>
     </div>
 

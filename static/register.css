@@ -3,36 +3,6 @@
     src: url("/static/assets/fonts/NotoSans-Regular.ttf") format("truetype");
 }
 
-@keyframes slideUp {
-    0% {bottom: 0%; opacity: 1; display: inherit;}
-    99% {bottom: 100%; opacity: 0; display: inherit;}
-    100% {bottom: 100%; opacity: 0; display: none;}
-}
-
-@keyframes slideFromBottom {
-    0% {top: 100%; opacity: 0; display: none;}
-    1% {top: 100%; opacity: 0; display: inherit;}
-    100% {top: 0%; opacity: 1; display: inherit;}
-}
-
-.slideUpAnim {
-    position: relative;
-    overflow-y: hidden;
-    animation-name: slideUp;
-    animation-duration: 2s;
-    animation-delay: 0s;
-    animation-fill-mode: forwards;
-}
-
-.slideFromBottomAnim {
-    position: relative;
-    overflow-y: hidden;
-    animation-name: slideFromBottom;
-    animation-duration: 2s;
-    animation-delay: 0s;
-    animation-fill-mode: forwards;
-}
-
 body {
     background-color: rgb(42, 42, 42);
     font-family: NotoSans-Regular;
@@ -56,13 +26,35 @@ body {
     transform: translate(-50% , -50%);
     z-index: 6;
     background-color: rgb(250, 250, 250);
-    padding: 5%;
+    padding-top: 7vh;
+    padding-bottom: 7vh;
+    padding-left: 8vw;
+    padding-right: 8vw;
+    width: 15em;
     overflow-y: hidden;
 }
 
-.playerInfoSlide {
-    position: relative;
+#playerIdTextarea {
+    resize: none;
+    width: 100%;
     text-align: center;
+}
+
+#enterGameButton {
+    background-color: rgb(39, 91, 247);
+    color: rgb(250, 250, 250);
+    font-family: inherit;
+    font-size: large;
+    border: 0;
+    cursor: pointer;
+    padding: 2%;
+    border-radius: 3%;
+    margin-top: 1em;
+    right: 25%;
+}
+
+#enterGameButton:hover {
+    background-color: rgb(74, 116, 241);
 }
 
 #error {
@@ -89,7 +81,7 @@ input {
     border-radius: .5em;
 }
 
-button {
+#registerButton {
     position: fixed;
     background-color: transparent;
     border: 0;
