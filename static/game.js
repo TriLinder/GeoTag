@@ -115,6 +115,7 @@ function updateHUD() {
         totalSeconds = Math.floor((getServerTime() - runner["runnerSince"]) / 1000);
         
         text = `Runner: ${runner["name"]} (${secondsToReadableTime(totalSeconds)})`;
+        document.getElementById("restartJailButton").style.display = "none";
     }
     else {
         secondsLeft = Math.ceil((jailEnd - getServerTime()) / 1000);

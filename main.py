@@ -18,6 +18,7 @@ class Game :
 
     def restartJailPeriod(self) :
         self.jailTime = time.time() + config["serverConfig"]["jailPeriod"]
+        self.getRunner().runnerSince += config["serverConfig"]["jailPeriod"]
     
     def getRunner(self) :
         try :
@@ -52,10 +53,10 @@ class Player :
         if self.game.runnerID :
             self.game.getRunner().isRunner = False
         
+        self.runnerSince = time.time()
         self.game.runnerID = self.id
         self.game.restartJailPeriod()
         self.isRunner = True
-        self.runnerSince = self.game.jailTime
     
     def getPlayerInfo(self) :
         j = {"name": self.name, "location": {"lat": self.lat, "lon": self.lon}, "runnerSince": self.runnerSince * 1000}
