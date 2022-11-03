@@ -90,6 +90,7 @@ def getConfigApi() :
 def updateLocationApi() :
     global playerLocations
     
+    print(str(request.headers))
     playerID = request.headers["playerID"]
     lat, lon = request.data.decode("utf-8").split(";")
 

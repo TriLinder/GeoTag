@@ -7,9 +7,25 @@
     <title>Choose your name</title>
   </head>
   <body>
-    <p id="error"></p>
-    Username: <input type="text" id="usernameInput" maxlength="8"> <br>
-    <button onclick="register()" id="registerButton">Start</button>
+
+    <div id="overlayDiv" style="display: none;">
+      <div id="playerInfo" class="playerInfoSlide" style="display: none;">
+        <div id="playerInfoSlide1">
+          <h2 id="welcomeText">Welcome, TriLinder!</h2>
+        </div>
+
+        <div id="playerInfoSlide2" class="playerInfoSlide" style="display: none;">
+          <p>Paste this into your app.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Username:</h2>
+      <p id="error"></p>
+      <input type="text" id="usernameInput" maxlength="8" placeholder="Username">
+      <button onclick="register()" id="registerButton"><span class="buttonSymbol"> > </span></button>
+    </div>
 
     <script src="/static/register.js" crossorigin="anonymous"></script>
   </body>

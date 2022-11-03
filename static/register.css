@@ -1,3 +1,103 @@
+@font-face {
+    font-family:"NotoSans-Regular";
+    src: url("/static/assets/fonts/NotoSans-Regular.ttf") format("truetype");
+}
+
+@keyframes slideUp {
+    0% {bottom: 0%; opacity: 1; display: inherit;}
+    99% {bottom: 100%; opacity: 0; display: inherit;}
+    100% {bottom: 100%; opacity: 0; display: none;}
+}
+
+@keyframes slideFromBottom {
+    0% {top: 100%; opacity: 0; display: none;}
+    1% {top: 100%; opacity: 0; display: inherit;}
+    100% {top: 0%; opacity: 1; display: inherit;}
+}
+
+.slideUpAnim {
+    position: relative;
+    overflow-y: hidden;
+    animation-name: slideUp;
+    animation-duration: 2s;
+    animation-delay: 0s;
+    animation-fill-mode: forwards;
+}
+
+.slideFromBottomAnim {
+    position: relative;
+    overflow-y: hidden;
+    animation-name: slideFromBottom;
+    animation-duration: 2s;
+    animation-delay: 0s;
+    animation-fill-mode: forwards;
+}
+
+body {
+    background-color: rgb(42, 42, 42);
+    font-family: NotoSans-Regular;
+}
+
+#overlayDiv {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.25);
+    z-index: 5;
+}
+
+#playerInfo {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50% , -50%);
+    z-index: 6;
+    background-color: rgb(250, 250, 250);
+    padding: 5%;
+    overflow-y: hidden;
+}
+
+.playerInfoSlide {
+    position: relative;
+    text-align: center;
+}
+
 #error {
     color: red;
+}
+
+.box {
+    text-align: center;
+    position: absolute;
+    font-size: 1.25em;
+    top: 50%;
+    left: 50%;
+    color: rgb(250, 250, 250);
+    padding: 5%;
+    border-radius: .25em;
+    transform: translate(-50% , -50%);
+}
+
+input {
+    background-color: rgb(255, 255, 255);
+    color: rgb(28, 28, 28);
+    text-align: center;
+    border-width: 0;
+    border-radius: .5em;
+}
+
+button {
+    position: fixed;
+    background-color: transparent;
+    border: 0;
+}
+
+.buttonSymbol {
+    color: rgb(212, 212, 212);
+    text-decoration: solid;
+    font-weight: bolder;
+    font-size: 1.7em;
 }
