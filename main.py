@@ -33,6 +33,7 @@ class Player :
 
         self.lastUpdate = -1
         self.isRunner = False
+        self.runnerSince = -1
         self.lat = None
         self.lon = None
 
@@ -42,9 +43,10 @@ class Player :
         
         self.game.runnerID = self.id
         self.isRunner = True
+        self.runnerSince = time.time()
     
     def getPlayerInfo(self) :
-        j = {"name": self.name, "location": {"lat": self.lat, "lon": self.lon}}
+        j = {"name": self.name, "location": {"lat": self.lat, "lon": self.lon}, "runnerSince": self.runnerSince * 1000}
         return j
 
     def updatePos(self, lat, lon) :
@@ -64,7 +66,7 @@ def sendUpdateSocket() :
     for player in game.players.values() :
         playerInfo[player.id] = player.getPlayerInfo()
 
-    data = {"runnerID": game.getRunner().id, "players": playerInfo, "time": time.time()}
+    data = {"runnerID": game.getRunner().id, "players": playerInfo, "time": time.time() * 1000}
     socketio.emit("update", data, broadcast=True)
 
 @app.post("/api/register")

@@ -2,7 +2,9 @@ let config = {};
 let gameData = null;
 let players = null;
 let runnerID = null;
+let runnerSince = -1;
 let serverTime = -1;
+let serverTimeOffset = -1;
 
 var playerID = document.cookie;
 
@@ -72,6 +74,35 @@ async function pageLoad() {
                                 });
 
     socket.on("update", updateSocket);
+
+    setInterval(tick, 50);
+}
+
+function secondsToReadableTime(totalSeconds) {
+    minutes = Math.floor(totalSeconds / 60);
+    seconds = totalSeconds % 60;
+
+    return `${minutes}min ${seconds}s`
+}
+
+function updateHUD() {
+    if (!players) {
+        return;
+    }
+
+    runner = players[runnerID];
+    totalSeconds = Math.floor((getServerTime() - runner["runnerSince"]) / 1000);
+    
+    text = `Runner: ${runner["name"]} (${secondsToReadableTime(totalSeconds)})`;
+    document.getElementById("runnerInfo").innerHTML = text
+}
+
+function tick() {
+    updateHUD();
+}
+
+function getServerTime() {
+    return (new Date().getTime()) - serverTimeOffset
 }
 
 function getGeojson(lat, lon) {
@@ -90,20 +121,29 @@ function getGeojson(lat, lon) {
 }
 
 function updateMapMarkers() {
-    runnerLat = players[runnerID]["location"]["lat"]
-    runnerLon = players[runnerID]["location"]["lon"]
+    runnerLat = players[runnerID]["location"]["lat"];
+    runnerLon = players[runnerID]["location"]["lon"];
     map.getSource("runner").setData(getGeojson(runnerLat, runnerLon));
 
-    myLat = players[playerID]["location"]["lat"]
-    myLon = players[playerID]["location"]["lon"]
+    myLat = players[playerID]["location"]["lat"];
+    myLon = players[playerID]["location"]["lon"];
     map.getSource("me").setData(getGeojson(myLat, myLon));
+}
+
+function flyToRunner() {
+    runnerLat = players[runnerID]["location"]["lat"];
+    runnerLon = players[runnerID]["location"]["lon"];
+
+    map.flyTo({center: [runnerLon, runnerLat]});
 }
 
 function updateSocket(data) {
     gameData = data;
     runnerID = data["runnerID"];
     players = data["players"];
-    serverTime = data["time"]*1000;
+    serverTime = data["time"];
+
+    serverTimeOffset = (new Date().getTime()) - serverTime;
 
     updateMapMarkers();
 }
