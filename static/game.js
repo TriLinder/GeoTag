@@ -39,8 +39,6 @@ function logOut() {
 async function pageLoad() {
     console.log("Page loaded!");
     await getConfig();
-
-    socket = io();
     
     mapboxgl.accessToken = config["mapboxApiKey"];
 
@@ -82,15 +80,19 @@ async function pageLoad() {
                                     });
     });
 
+    socket = io();
+
     socket.on("connect", function() {
-                                    socket.emit('clientConnect', {connected: true, playerID: playerID}); 
+                                    socket.emit('clientConnect', {connected: true, playerID: playerID});
                                     console.log("Socket connected!");
+                                    sendHeartbeat();
                                 });
 
     socket.on("update", updateSocket);
 
     closeUI();
     setInterval(tick, 50);
+    setInterval(sendHeartbeat, 15*1000);
 }
 
 function secondsToReadableTime(totalSeconds) {
@@ -213,7 +215,14 @@ function becomeRunner() {
     socket.emit('becomeRunner', {playerID: playerID});
 }
 
+function sendHeartbeat() {
+    console.log("Sending heartbeat!");
+    socket.emit("heartbeat", {playerID: playerID});
+}
+
 function updateSocket(data) {
+    console.log("Received game update!");
+
     gameData = data;
     runnerID = data["runnerID"];
     players = data["players"];
