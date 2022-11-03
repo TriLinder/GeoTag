@@ -3,6 +3,7 @@ let gameData = null;
 let players = null;
 let runnerID = null;
 let runnerSince = -1;
+let jailEnd = -1;
 let serverTime = -1;
 let serverTimeOffset = -1;
 
@@ -90,10 +91,19 @@ function updateHUD() {
         return;
     }
 
-    runner = players[runnerID];
-    totalSeconds = Math.floor((getServerTime() - runner["runnerSince"]) / 1000);
-    
-    text = `Runner: ${runner["name"]} (${secondsToReadableTime(totalSeconds)})`;
+    inJail = jailEnd > getServerTime()
+
+    if (!inJail) {
+        runner = players[runnerID];
+        totalSeconds = Math.floor((getServerTime() - runner["runnerSince"]) / 1000);
+        
+        text = `Runner: ${runner["name"]} (${secondsToReadableTime(totalSeconds)})`;
+    }
+    else {
+        secondsLeft = Math.ceil((jailEnd - getServerTime()) / 1000);
+        text = `JAIL: ${secondsToReadableTime(secondsLeft)}`;
+    }
+
     document.getElementById("runnerInfo").innerHTML = text
 
     //Hide request runner button when a runner
@@ -167,6 +177,7 @@ function updateSocket(data) {
     gameData = data;
     runnerID = data["runnerID"];
     players = data["players"];
+    jailEnd = data["jailEnd"];
     serverTime = data["time"];
 
     serverTimeOffset = (new Date().getTime()) - serverTime;

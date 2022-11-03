@@ -12,6 +12,8 @@ class Game :
     def __init__(self) -> None :
         self.runnerID = None
         self.players = {}
+
+        self.jailTime = -1
     
     def getRunner(self) :
         return self.players[self.runnerID]
@@ -42,8 +44,9 @@ class Player :
             self.game.getRunner().isRunner = False
         
         self.game.runnerID = self.id
+        self.game.jailTime = time.time() + config["serverConfig"]["jailPeriod"]
         self.isRunner = True
-        self.runnerSince = time.time()
+        self.runnerSince = self.game.jailTime
     
     def getPlayerInfo(self) :
         j = {"name": self.name, "location": {"lat": self.lat, "lon": self.lon}, "runnerSince": self.runnerSince * 1000}
@@ -60,13 +63,20 @@ def validatePlayerID(playerID) :
 def clientConnectedSocket(data):
     sendUpdateSocket()
 
+@socketio.on('becomeRunner')
+def becomeRunnerSocket(data) :
+    playerID = data["playerID"]
+
+    game.players[playerID].becomeRunner()
+    sendUpdateSocket()
+
 def sendUpdateSocket() :
     playerInfo = {}
 
     for player in game.players.values() :
         playerInfo[player.id] = player.getPlayerInfo()
 
-    data = {"runnerID": game.getRunner().id, "players": playerInfo, "time": time.time() * 1000}
+    data = {"runnerID": game.getRunner().id, "players": playerInfo, "jailEnd":game.jailTime * 1000, "time": time.time() * 1000}
     socketio.emit("update", data, broadcast=True)
 
 @app.post("/api/register")
