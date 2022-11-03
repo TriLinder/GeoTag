@@ -69,7 +69,7 @@ async function pageLoad() {
     });
 
     socket.on("connect", function() {
-                                    socket.emit('clientConnect', {connected: true}); 
+                                    socket.emit('clientConnect', {connected: true, playerID: playerID}); 
                                     console.log("Socket connected!");
                                 });
 
@@ -95,6 +95,14 @@ function updateHUD() {
     
     text = `Runner: ${runner["name"]} (${secondsToReadableTime(totalSeconds)})`;
     document.getElementById("runnerInfo").innerHTML = text
+
+    //Hide request runner button when a runner
+    if (playerID == runnerID) {
+        document.getElementById("becomeRunnerButton").style.display = "none";
+    }
+    else {
+        document.getElementById("becomeRunnerButton").style.display = "inline";
+    }
 }
 
 function tick() {
@@ -135,6 +143,24 @@ function flyToRunner() {
     runnerLon = players[runnerID]["location"]["lon"];
 
     map.flyTo({center: [runnerLon, runnerLat]});
+}
+
+function closeUI() {
+    document.getElementById("overlayDiv").style.display = "none";
+    document.getElementById("confirmRunnerPopup").style.display = "none";
+}
+
+function becomeRunnerButton() {
+    document.getElementById("overlayDiv").style.display = "inline";
+    document.getElementById("confirmRunnerPopup").style.display = "inline";
+}
+
+function becomeRunner() {
+    console.log("Requesting becoming a runner.");
+
+    closeUI();
+    document.getElementById("becomeRunnerButton").style.display = "none";
+    socket.emit('becomeRunner', {playerID: playerID});
 }
 
 function updateSocket(data) {

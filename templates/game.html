@@ -12,8 +12,19 @@
     <img id="runnerIcon" src="/static/assets/icons/runner-icon.svg">
     <img id="meIcon" src="/static/assets/icons/me-icon.svg">
 
+    <div id="overlayDiv" style="display: none;">
+      <div class="popup" id="confirmRunnerPopup">
+        <h2>Become the runner</h2>
+        <hr>
+        <p>Are you sure you want to become the runner and start the jail peroid?</p>
+        <button class="button grayButton confirmButton" onclick="closeUI()">NO</button>
+        <button class="button redButton confirmButton" onclick="becomeRunner()">YES</button>
+      </div>
+    </div>
+
     <div class="hud">
       <h2 id="runnerInfo" onclick="flyToRunner()">Runner: ??? (0min 0s)</h2>
+      <button class="button blueButton" id="becomeRunnerButton" onclick="becomeRunnerButton()" style="display: none;">BECOME RUNNER</button>
     </div>
 
     <div id="map">
