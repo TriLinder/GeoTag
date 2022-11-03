@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg class="icon icon-tabler icon-tabler-circle-dot" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" version="1.1" id="svg68" xmlns="http://www.w3.org/2000/svg">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" id="path62" style="paint-order:markers stroke fill"/>
+  <ellipse style="fill:#275bf7;fill-opacity:1;stroke:none;stroke-width:2.48346853;paint-order:fill markers stroke;opacity:1" id="path80" cx="11.985" cy="12" rx="9.403" ry="9.239"/>
+  <circle cx="12" cy="12" r="1" id="circle64" style="paint-order:markers stroke fill"/>
+  <circle cx="12" cy="12" r="9" id="circle66" style="paint-order:markers stroke fill"/>
+</svg>

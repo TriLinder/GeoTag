@@ -1,5 +1,10 @@
 let config = {};
-let runnerInfo = null;
+let gameData = null;
+let players = null;
+let runnerID = null;
+let serverTime = -1;
+
+var playerID = document.cookie;
 
 async function request(url, options = {}) {
     let object = await fetch(url, options);
@@ -34,8 +39,9 @@ async function pageLoad() {
     map.on("style.load", function() {map.setFog()});
     map.on("load", async function() {
                                     runnerIcon = map.addImage("runner", document.getElementById("runnerIcon"));
+                                    meIcon = map.addImage("me", document.getElementById("meIcon"));
 
-                                    map.addSource("runner", {type: "geojson", data: getGeojson()});
+                                    map.addSource("runner", {type: "geojson", data: getGeojson(0, 0)});
 
                                     map.addLayer({
                                         "id": "runner",
@@ -43,6 +49,18 @@ async function pageLoad() {
                                         "source": "runner",
                                         "layout": {
                                             "icon-image": "runner",
+                                            "icon-size": 1
+                                        }    
+                                    });
+
+                                    map.addSource("me", {type: "geojson", data: getGeojson(0, 0)});
+
+                                    map.addLayer({
+                                        "id": "me",
+                                        "type": "symbol",
+                                        "source": "me",
+                                        "layout": {
+                                            "icon-image": "me",
                                             "icon-size": 1
                                         }    
                                     });
@@ -56,15 +74,7 @@ async function pageLoad() {
     socket.on("update", updateSocket);
 }
 
-function getGeojson() {
-    lat = 0;
-    lon = 0
-    
-    if (runnerInfo) {
-        lat = runnerInfo["location"]["lat"];
-        lon = runnerInfo["location"]["lon"];
-    }
-
+function getGeojson(lat, lon) {
     return {
         "type": "FeatureCollection",
         "features": [
@@ -79,11 +89,23 @@ function getGeojson() {
     };
 }
 
-function updateSocket(data) {
-    runnerInfo = data["runner"];
+function updateMapMarkers() {
+    runnerLat = players[runnerID]["location"]["lat"]
+    runnerLon = players[runnerID]["location"]["lon"]
+    map.getSource("runner").setData(getGeojson(runnerLat, runnerLon));
 
-    //Update runner's position on the map
-    map.getSource("runner").setData(getGeojson());
+    myLat = players[playerID]["location"]["lat"]
+    myLon = players[playerID]["location"]["lon"]
+    map.getSource("me").setData(getGeojson(myLat, myLon));
+}
+
+function updateSocket(data) {
+    gameData = data;
+    runnerID = data["runnerID"];
+    players = data["players"];
+    serverTime = data["time"]*1000;
+
+    updateMapMarkers();
 }
 
 window.onload = pageLoad;
