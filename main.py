@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect
 from flask_socketio import SocketIO
+import random
 import uuid
 import time
 import math
@@ -16,7 +17,10 @@ class Game :
         self.jailTime = -1
     
     def getRunner(self) :
-        return self.players[self.runnerID]
+        try :
+            return self.players[self.runnerID]
+        except KeyError :
+            return None
 
     def addPlayer(self, name) :
         player = Player(name, self)
@@ -71,6 +75,28 @@ def validateCookies(cookies) :
 def clientConnectedSocket(data):
     sendUpdateSocket()
 
+@socketio.on('logOut')
+def logOutSocket(data) :
+    playerID = data["playerID"]
+
+    try :
+        player = game.players[playerID]
+    except KeyError :
+        return
+
+    wasRunner = player.isRunner
+    del game.players[playerID]
+
+    if wasRunner :
+        game.runnerID = None
+        game.jailTime = -1
+
+        if len(game.players) > 0 :
+            randomPlayer = random.choice(list(game.players.values()))
+            randomPlayer.becomeRunner()
+    
+    sendUpdateSocket()
+
 @socketio.on('becomeRunner')
 def becomeRunnerSocket(data) :
     playerID = data["playerID"]
@@ -84,7 +110,13 @@ def sendUpdateSocket() :
     for player in game.players.values() :
         playerInfo[player.id] = player.getPlayerInfo()
 
-    data = {"runnerID": game.getRunner().id, "players": playerInfo, "jailEnd":game.jailTime * 1000, "time": time.time() * 1000}
+    runner = game.getRunner()
+    if runner :
+        runnerID = runner.id
+    else :
+        runnerID = None #Sends null, but that doesn't matter as the client will log out anyway.
+
+    data = {"runnerID": runnerID, "players": playerInfo, "jailEnd":game.jailTime * 1000, "time": time.time() * 1000}
     socketio.emit("update", data, broadcast=True)
 
 @app.post("/api/register")

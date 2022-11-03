@@ -23,6 +23,16 @@ async function getConfig() {
     return j;
 }
 
+function logOut() {
+    console.log("Logging out!");
+
+    socket.emit("logOut", {playerID: playerID});
+    document.cookie = "loggedOut";
+    playerID = "loggedOut";
+
+    self.window.location = "/";
+}
+
 async function pageLoad() {
     console.log("Page loaded!");
     await getConfig();
@@ -157,12 +167,19 @@ function flyToRunner() {
 
 function closeUI() {
     document.getElementById("overlayDiv").style.display = "none";
+
     document.getElementById("confirmRunnerPopup").style.display = "none";
+    document.getElementById("logOutPopup").style.display = "none";
 }
 
 function becomeRunnerButton() {
     document.getElementById("overlayDiv").style.display = "inline";
     document.getElementById("confirmRunnerPopup").style.display = "inline";
+}
+
+function logOutPopup() {
+    document.getElementById("overlayDiv").style.display = "inline";
+    document.getElementById("logOutPopup").style.display = "inline";
 }
 
 function becomeRunner() {
@@ -179,6 +196,10 @@ function updateSocket(data) {
     players = data["players"];
     jailEnd = data["jailEnd"];
     serverTime = data["time"];
+
+    if (!(playerID in players)) {
+        logOut();
+    }
 
     serverTimeOffset = (new Date().getTime()) - serverTime;
 
