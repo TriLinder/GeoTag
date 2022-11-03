@@ -15,6 +15,9 @@ class Game :
         self.players = {}
 
         self.jailTime = -1
+
+    def restartJailPeriod(self) :
+        self.jailTime = time.time() + config["serverConfig"]["jailPeriod"]
     
     def getRunner(self) :
         try :
@@ -48,7 +51,7 @@ class Player :
             self.game.getRunner().isRunner = False
         
         self.game.runnerID = self.id
-        self.game.jailTime = time.time() + config["serverConfig"]["jailPeriod"]
+        self.game.restartJailPeriod()
         self.isRunner = True
         self.runnerSince = self.game.jailTime
     
@@ -73,6 +76,11 @@ def validateCookies(cookies) :
 
 @socketio.on('clientConnect')
 def clientConnectedSocket(data):
+    sendUpdateSocket()
+
+@socketio.on('restartJailPeriod')
+def restartJailPeriodSocket(data) :
+    game.restartJailPeriod()
     sendUpdateSocket()
 
 @socketio.on('logOut')

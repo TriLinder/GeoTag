@@ -26,6 +26,9 @@ async function getConfig() {
 function logOut() {
     console.log("Logging out!");
 
+    closeUI();
+    document.getElementById("hud").style.display = "none";
+
     socket.emit("logOut", {playerID: playerID});
     document.cookie = "loggedOut";
     playerID = "loggedOut";
@@ -86,6 +89,7 @@ async function pageLoad() {
 
     socket.on("update", updateSocket);
 
+    closeUI();
     setInterval(tick, 50);
 }
 
@@ -101,6 +105,7 @@ function updateHUD() {
         return;
     }
 
+    isRunner = playerID == runnerID
     inJail = jailEnd > getServerTime()
 
     if (!inJail) {
@@ -112,12 +117,19 @@ function updateHUD() {
     else {
         secondsLeft = Math.ceil((jailEnd - getServerTime()) / 1000);
         text = `JAIL: ${secondsToReadableTime(secondsLeft)}`;
+
+        if (isRunner) {
+            document.getElementById("restartJailButton").style.display = "none";
+        }
+        else {
+            document.getElementById("restartJailButton").style.display = "inline";
+        }
     }
 
     document.getElementById("runnerInfo").innerHTML = text
 
     //Hide request runner button when a runner
-    if (playerID == runnerID) {
+    if (isRunner) {
         document.getElementById("becomeRunnerButton").style.display = "none";
     }
     else {
@@ -170,6 +182,7 @@ function closeUI() {
 
     document.getElementById("confirmRunnerPopup").style.display = "none";
     document.getElementById("logOutPopup").style.display = "none";
+    document.getElementById("restartJailPopup").style.display = "none";
 }
 
 function becomeRunnerButton() {
@@ -177,9 +190,19 @@ function becomeRunnerButton() {
     document.getElementById("confirmRunnerPopup").style.display = "inline";
 }
 
+function restartJailButton() {
+    document.getElementById("overlayDiv").style.display = "inline";
+    document.getElementById("restartJailPopup").style.display = "inline";
+}
+
 function logOutPopup() {
     document.getElementById("overlayDiv").style.display = "inline";
     document.getElementById("logOutPopup").style.display = "inline";
+}
+
+function restartJailPeriod() {
+    closeUI();
+    socket.emit('restartJailPeriod', {});
 }
 
 function becomeRunner() {

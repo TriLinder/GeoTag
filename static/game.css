@@ -47,7 +47,7 @@ body {
     overflow-y: hidden;
 }
 
-.hud {
+#hud {
     position: absolute;
     z-index: 2;
     left: 50%;
