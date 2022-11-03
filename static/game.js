@@ -235,7 +235,12 @@ function updateSocket(data) {
 
     serverTimeOffset = (new Date().getTime()) - serverTime;
 
-    updateMapMarkers();
+    try {
+        updateMapMarkers();
+    }
+    catch { //Mapbox weirdness on page load
+        setTimeout(updateMapMarkers, 3*1000);
+    }
 }
 
 window.onload = pageLoad;
