@@ -47,7 +47,7 @@ class Player :
         self.lat = None
         self.lon = None
 
-        self.lastHeartbeat = 999999999999999
+        self.lastHeartbeat = time.time()
 
     def becomeRunner(self) :
         if self.game.runnerID :
