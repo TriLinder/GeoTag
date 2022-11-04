@@ -34,6 +34,10 @@ body {
     overflow-y: hidden;
 }
 
+#gameIcon {
+    width: 8em;
+}
+
 #playerIdTextarea {
     resize: none;
     width: 100%;
