@@ -1,10 +1,7 @@
-@font-face {
-    font-family:"NotoSans-Regular";
-    src: url("/static/assets/fonts/NotoSans-Regular.ttf") format("truetype");
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
 
 body {
-    font-family: NotoSans-Regular;
+    font-family: 'Noto Sans', sans-serif;
 }
 
 #map {

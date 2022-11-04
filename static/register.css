@@ -1,11 +1,8 @@
-@font-face {
-    font-family:"NotoSans-Regular";
-    src: url("/static/assets/fonts/NotoSans-Regular.ttf") format("truetype");
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
 
 body {
     background-color: rgb(42, 42, 42);
-    font-family: NotoSans-Regular;
+    font-family: 'Noto Sans', sans-serif;
 }
 
 #overlayDiv {
