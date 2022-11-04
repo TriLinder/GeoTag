@@ -45,7 +45,7 @@ async function pageLoad() {
     map = new mapboxgl.Map({
         container: "map",
         style: "mapbox://styles/mapbox/streets-v11",
-        center: config["mapCenter"],
+        center: [config["mapCenter"][1], config["mapCenter"][0]],
         zoom: config["mapZoomLevel"],
         projection: config["mapProjection"]
     });

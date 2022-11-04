@@ -5,9 +5,22 @@ import uuid
 import time
 import math
 import json
+import os
 
 app = Flask(__name__)
 socketio = SocketIO(app)
+
+defaultConfig = {
+    "webConfig": {
+        "mapboxApiKey": "YOUR API KEY HERE, SEE https://account.mapbox.com/",
+        "mapCenter": [50.08649, 14.41137],
+        "mapZoomLevel": 15,
+        "mapProjection": "mercator"
+    },
+    "serverConfig": {
+        "jailPeriod": 120
+    }
+}
 
 class Game :
     def __init__(self) -> None :
@@ -208,6 +221,10 @@ def mapPage() :
     return render_template("game.html")
 
 if __name__ == "__main__" :
+    if not os.path.isfile("config.json") :
+        with open("config.json", "w") as f :
+            f.write(json.dumps(defaultConfig, indent=2))
+
     with open("config.json", "r") as f :
         config = json.loads(f.read())
 
